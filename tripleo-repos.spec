@@ -30,6 +30,13 @@ BuildRequires:  python-setuptools
 BuildRequires:  git
 BuildRequires:  python-mock
 BuildRequires:  python-fixtures
+# Required for unit tests
+BuildRequires:  python-requests
+BuildRequires:  python-oslotest
+BuildRequires:  python-testrepository
+BuildRequires:  python-testscenarios
+BuildRequires:  python-testtools
+
 
 Requires:       python-requests
 
@@ -47,6 +54,12 @@ BuildRequires:  python3-pbr
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-mock
 BuildRequires:  python3-fixtures
+# Required for unit tests
+BuildRequires:  python3-requests
+BuildRequires:  python3-oslotest
+BuildRequires:  python3-testrepository
+BuildRequires:  python3-testscenarios
+BuildRequires:  python3-testtools
 
 Requires:       python3-requests
 
