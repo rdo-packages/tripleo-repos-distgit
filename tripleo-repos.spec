@@ -9,6 +9,10 @@
 
 %global executable tripleo-repos
 
+%global common_desc \
+tripleo-repos is a tool to provide a single method for setting up the necessary \
+yum repositories to do a TripleO deployment.
+
 Name:       %{executable}
 Version:    XXX
 Release:    XXX
@@ -41,8 +45,7 @@ BuildRequires:  python-testtools
 Requires:       python-requests
 
 %description -n python2-%{executable}
-tripleo-repos is a tool to provide a single method for setting up the necessary
-yum repositories to do a TripleO deployment.
+%{common_desc}
 
 %if 0%{?with_python3}
 %package -n python3-%{executable}
@@ -64,15 +67,13 @@ BuildRequires:  python3-testtools
 Requires:       python3-requests
 
 %description -n python3-%{executable}
-tripleo-repos is a tool to provide a single method for setting up the necessary
-yum repositories to do a TripleO deployment.
+%{common_desc}
 
 %endif # with_python3
 
 
 %description
-tripleo-repos is a tool to provide a single method for setting up the necessary
-yum repositories to do a TripleO deployment.
+%{common_desc}
 
 
 %prep
