@@ -29,20 +29,20 @@ Summary:    A tool for managing TripleO repos from places like dlrn and Ceph.
 %{?python_provide:%python_provide python2-%{executable}}
 
 BuildRequires:  python2-devel
-BuildRequires:  python2-pbr
-BuildRequires:  python2-setuptools
+BuildRequires:  python-pbr
+BuildRequires:  python-setuptools
 BuildRequires:  git
-BuildRequires:  python2-mock
-BuildRequires:  python2-fixtures
+BuildRequires:  python-mock
+BuildRequires:  python-fixtures
 # Required for unit tests
-BuildRequires:  python2-requests
-BuildRequires:  python2-oslotest
-BuildRequires:  python2-testrepository
-BuildRequires:  python2-testscenarios
-BuildRequires:  python2-testtools
+BuildRequires:  python-requests
+BuildRequires:  python-oslotest
+BuildRequires:  python-testrepository
+BuildRequires:  python-testscenarios
+BuildRequires:  python-testtools
 
 
-Requires:       python2-requests
+Requires:       python-requests
 
 %description -n python2-%{executable}
 %{common_desc}
