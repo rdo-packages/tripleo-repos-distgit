@@ -49,7 +49,11 @@ BuildRequires:  python%{pyver}-testscenarios
 BuildRequires:  python%{pyver}-testtools
 
 
+%if %{pyver} == 2
+Requires:       python-requests
+%else
 Requires:       python%{pyver}-requests
+%endif
 
 %description -n python%{pyver}-%{executable}
 %{common_desc}
