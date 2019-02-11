@@ -90,3 +90,4 @@ ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-%{pyver}
 %{_bindir}/%{executable}-%{pyver}
 
 %changelog
+# REMOVEME: error caused by commit http://git.openstack.org/cgit/openstack/tripleo-repos/commit/?id=0fdb8ebdb4a8e2364f9dbb74916c995d76f64fac
