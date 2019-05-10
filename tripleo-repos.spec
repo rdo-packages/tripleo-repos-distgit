@@ -47,6 +47,7 @@ BuildRequires:  python%{pyver}-oslotest
 BuildRequires:  python%{pyver}-testrepository
 BuildRequires:  python%{pyver}-testscenarios
 BuildRequires:  python%{pyver}-testtools
+BuildRequires:  python%{pyver}-ddt
 
 
 %if %{pyver} == 2
