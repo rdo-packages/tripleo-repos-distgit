@@ -40,6 +40,7 @@ BuildRequires:  python-oslotest
 BuildRequires:  python-testrepository
 BuildRequires:  python-testscenarios
 BuildRequires:  python-testtools
+BuildRequires:  python2-ddt
 
 
 Requires:       python-requests
@@ -63,6 +64,7 @@ BuildRequires:  python3-oslotest
 BuildRequires:  python3-testrepository
 BuildRequires:  python3-testscenarios
 BuildRequires:  python3-testtools
+BuildRequires:  python3-ddt
 
 Requires:       python3-requests
 
