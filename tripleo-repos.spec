@@ -49,7 +49,6 @@ BuildRequires:  python%{pyver}-testscenarios
 BuildRequires:  python%{pyver}-testtools
 BuildRequires:  python%{pyver}-ddt
 
-
 %if %{pyver} == 2
 Requires:       python-requests
 %else
