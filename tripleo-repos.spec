@@ -42,7 +42,6 @@ BuildRequires:  python-testscenarios
 BuildRequires:  python-testtools
 BuildRequires:  python2-ddt
 
-
 Requires:       python-requests
 
 %description -n python2-%{executable}
