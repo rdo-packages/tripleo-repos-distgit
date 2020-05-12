@@ -1,14 +1,3 @@
-# Macros for py2/py3 compatibility
-%if 0%{?fedora} || 0%{?rhel} > 7
-%global pyver %{python3_pkgversion}
-%else
-%global pyver 2
-%endif
-%global pyver_bin python%{pyver}
-%global pyver_sitelib %python%{pyver}_sitelib
-%global pyver_install %py%{pyver}_install
-%global pyver_build %py%{pyver}_build
-# End of macros for py2/py3 compatibility
 %{!?upstream_version: %global upstream_version %{version}%{?milestone}}
 
 %global executable tripleo-repos
@@ -28,35 +17,29 @@ Source0:    http://tarballs.openstack.org/%{executable}/%{executable}-%{upstream
 
 BuildArch:  noarch
 
-%package -n python%{pyver}-%{executable}
+%package -n python3-%{executable}
 Summary:    A tool for managing TripleO repos from places like dlrn and Ceph.
-%{?python_provide:%python_provide python%{pyver}-%{executable}}
-%if %{pyver} == 3
+%{?python_provide:%python_provide python3-%{executable}}
 Obsoletes: python2-%{executable} < %{version}-%{release}
-%endif
 
-BuildRequires:  python%{pyver}-devel
-BuildRequires:  python%{pyver}-pbr
-BuildRequires:  python%{pyver}-setuptools
+BuildRequires:  python3-devel
+BuildRequires:  python3-pbr
+BuildRequires:  python3-setuptools
 BuildRequires:  git
-BuildRequires:  python%{pyver}-mock
-BuildRequires:  python%{pyver}-fixtures
+BuildRequires:  python3-mock
+BuildRequires:  python3-fixtures
 # Required for unit tests
-BuildRequires:  python%{pyver}-requests
-BuildRequires:  python%{pyver}-oslotest
-BuildRequires:  python%{pyver}-testrepository
-BuildRequires:  python%{pyver}-testscenarios
-BuildRequires:  python%{pyver}-testtools
-BuildRequires:  python%{pyver}-ddt
+BuildRequires:  python3-requests
+BuildRequires:  python3-oslotest
+BuildRequires:  python3-testrepository
+BuildRequires:  python3-testscenarios
+BuildRequires:  python3-testtools
+BuildRequires:  python3-ddt
 
 
-%if %{pyver} == 2
-Requires:       python-requests
-%else
-Requires:       python%{pyver}-requests
-%endif
+Requires:       python3-requests
 
-%description -n python%{pyver}-%{executable}
+%description -n python3-%{executable}
 %{common_desc}
 
 %description
@@ -70,24 +53,24 @@ Requires:       python%{pyver}-requests
 rm -f *requirements.txt
 
 %build
-%{pyver_build}
+%{py3_build}
 
 %install
-%{pyver_install}
+%{py3_install}
 
 # Create a versioned binary for backwards compatibility until everything is pure py3
-ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-%{pyver}
+ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 
 %check
-%{pyver_bin} setup.py test
+%{__python3} setup.py test
 
-%files -n python%{pyver}-%{executable}
+%files -n python3-%{executable}
 %license LICENSE
 %doc README.rst
-%{pyver_sitelib}/tripleo_repos
-%{pyver_sitelib}/*.egg-info
-%exclude %{pyver_sitelib}/tripleo_repos/tests
+%{python3_sitelib}/tripleo_repos
+%{python3_sitelib}/*.egg-info
+%exclude %{python3_sitelib}/tripleo_repos/tests
 %{_bindir}/%{executable}
-%{_bindir}/%{executable}-%{pyver}
+%{_bindir}/%{executable}-3
 
 %changelog
