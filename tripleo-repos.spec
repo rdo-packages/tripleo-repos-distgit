@@ -26,6 +26,8 @@ URL:        http://launchpad.net/tripleo/
 
 Source0:    http://tarballs.openstack.org/%{executable}/%{executable}-%{upstream_version}.tar.gz
 
+Patch0001: 0001-Fix-compontent-handling.patch
+
 BuildArch:  noarch
 
 %package -n python%{pyver}-%{executable}
@@ -63,7 +65,7 @@ Requires:       python%{pyver}-requests
 
 
 %prep
-%autosetup -n %{executable}-%{upstream_version} -S git
+%autosetup -p1 -n %{executable}-%{upstream_version} -S git
 
 # Let's handle dependencies ourseleves
 rm -f *requirements.txt

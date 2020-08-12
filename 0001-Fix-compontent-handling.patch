@@ -1,0 +1,128 @@
+From f18928aa862d97814b6cd49bbcea955e45c5f3fb Mon Sep 17 00:00:00 2001
+From: Alex Schultz <aschultz@redhat.com>
+Date: Thu, 18 Jun 2020 13:26:17 -0600
+Subject: [PATCH] Fix component handling
+
+Since the we split the repos into components, a single delorean repo
+file can contain many repos. For current-tripleo-dev we only want to
+include certain packages from all the current repos. This change
+processes the repo file to append includepkgs to all repos defined in a
+single file. Additionally it adjusts the repo names to prevent conflicts
+and addresses priority is missing from a file with multiple repos.
+
+Change-Id: Ifb301609bf29a6a171c284647baea233a7dd07cc
+Closes-Bug: #1884129
+---
+ tripleo_repos/main.py            | 27 ++++++++++++++++++++++-----
+ tripleo_repos/tests/test_main.py | 25 +++++++++++++++++++------
+ 2 files changed, 41 insertions(+), 11 deletions(-)
+
+diff --git a/tripleo_repos/main.py b/tripleo_repos/main.py
+index 52d3e30..3beee8a 100755
+--- a/tripleo_repos/main.py
++++ b/tripleo_repos/main.py
+@@ -25,6 +25,7 @@ import requests
+ 
+ 
+ TITLE_RE = re.compile('\\[(.*)\\]')
++NAME_RE = re.compile('name=(.+)')
+ PRIORITY_RE = re.compile('priority=\\d+')
+ # Packages to be included from delorean-current when using current-tripleo
+ INCLUDE_PKGS = ('includepkgs=instack,instack-undercloud,'
+@@ -310,10 +311,24 @@ def _change_priority(content, new_priority):
+     new_content = PRIORITY_RE.sub('priority=%d' % new_priority, content)
+     # This shouldn't happen, but let's be safe.
+     if not PRIORITY_RE.search(new_content):
+-        new_content += '\npriority=%d' % new_priority
++        new_content = []
++        for line in content.split("\n"):
++            new_content.append(line)
++            if line.startswith('['):
++                new_content.append('priority=%d' % new_priority)
++        new_content = "\n".join(new_content)
+     return new_content
+ 
+ 
++def _add_includepkgs(content):
++    new_content = []
++    for line in content.split("\n"):
++        new_content.append(line)
++        if line.startswith('['):
++            new_content.append(INCLUDE_PKGS)
++    return "\n".join(new_content)
++
++
+ def _inject_mirrors(content, args):
+     """Replace any references to the default mirrors in repo content
+ 
+@@ -357,15 +372,17 @@ def _install_repos(args, base_path):
+             _write_repo(content, args.output_path)
+             content = _get_repo(base_path + 'current-tripleo/delorean.repo',
+                                 args)
+-            content = TITLE_RE.sub('[delorean-current-tripleo]', content)
++            content = TITLE_RE.sub('[\\1-current-tripleo]', content)
++            content = NAME_RE.sub('name=\\1-current-tripleo', content)
+             # We need to twiddle priorities since we're mixing multiple repos
+             # that are generated with the same priority.
+             content = _change_priority(content, 20)
+-            _write_repo(content, args.output_path)
++            _write_repo(content, args.output_path,
++                        name='delorean-current-tripleo')
+             content = _get_repo(base_path + 'current/delorean.repo', args)
+-            content += '\n%s' % INCLUDE_PKGS
++            content = _add_includepkgs(content)
+             content = _change_priority(content, 10)
+-            _write_repo(content, args.output_path)
++            _write_repo(content, args.output_path, name='delorean')
+         elif repo == 'tripleo-ci-testing':
+             content = _get_repo(base_path + 'tripleo-ci-testing/delorean.repo',
+                                 args)
+diff --git a/tripleo_repos/tests/test_main.py b/tripleo_repos/tests/test_main.py
+index 555fa5f..31b5b41 100644
+--- a/tripleo_repos/tests/test_main.py
++++ b/tripleo_repos/tests/test_main.py
+@@ -239,15 +239,16 @@ class TestTripleORepos(testtools.TestCase):
+         mock_get.assert_any_call('roads/delorean-deps.repo', args)
+         # This is the wrong name for the deps repo, but I'm not bothered
+         # enough by that to mess with mocking multiple different calls.
+-        mock_write.assert_any_call('[delorean]\n'
+-                                   'Mr. Fusion', 'test')
++        mock_write.assert_any_call('[delorean]\nMr. Fusion', 'test')
+         mock_get.assert_any_call('roads/current-tripleo/delorean.repo', args)
+         mock_write.assert_any_call('[delorean-current-tripleo]\n'
+-                                   'Mr. Fusion\npriority=20', 'test')
++                                   'priority=20\nMr. Fusion', 'test',
++                                   name='delorean-current-tripleo')
+         mock_get.assert_called_with('roads/current/delorean.repo', args)
+-        mock_write.assert_called_with('[delorean]\nMr. Fusion\n%s\n'
+-                                      'priority=10' %
+-                                      main.INCLUDE_PKGS, 'test')
++        mock_write.assert_called_with('[delorean]\npriority=10\n%s\n'
++                                      'Mr. Fusion' %
++                                      main.INCLUDE_PKGS, 'test',
++                                      name='delorean')
+ 
+     @mock.patch('tripleo_repos.main._get_repo')
+     @mock.patch('tripleo_repos.main._write_repo')
+@@ -418,6 +419,18 @@ enabled=1
+         result = main._change_priority('[delorean]', 10)
+         self.assertEqual('[delorean]\npriority=10', result)
+ 
++    def test_change_priority_none_muilti(self):
++        data = "[repo1]\n[repo2]\n"
++        expected = "[repo1]\n{0}\n[repo2]\n{0}\n".format("priority=10")
++        result = main._change_priority(data, 10)
++        self.assertEqual(expected, result)
++
++    def test_add_includepkgs(self):
++        data = "[repo1]\n[repo2]"
++        expected = "[repo1]\n{0}\n[repo2]\n{0}".format(main.INCLUDE_PKGS)
++        result = main._add_includepkgs(data)
++        self.assertEqual(expected, result)
++
+     def test_create_ceph(self):
+         mock_args = mock.Mock(mirror='http://foo')
+         result = main._create_ceph(mock_args, 'jewel')
+-- 
+2.26.2
+
