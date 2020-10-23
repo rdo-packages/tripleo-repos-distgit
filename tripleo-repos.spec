@@ -1,3 +1,5 @@
+%{!?sources_gpg: %{!?dlrn:%global sources_gpg 1} }
+%global sources_gpg_sign 0x2426b928085a020d8a90d0d879ab7008d0896c8a
 %{!?upstream_version: %global upstream_version %{version}%{?milestone}}
 
 %global executable tripleo-repos
@@ -14,8 +16,19 @@ License:    ASL 2.0
 URL:        http://launchpad.net/tripleo/
 
 Source0:    http://tarballs.openstack.org/%{executable}/%{executable}-%{upstream_version}.tar.gz
+# Required for tarball sources verification
+%if 0%{?sources_gpg} == 1
+Source101:        http://tarballs.openstack.org/%{executable}/%{executable}-%{upstream_version}.tar.gz.asc
+Source102:        https://releases.openstack.org/_static/%{sources_gpg_sign}.txt
+%endif
 
 BuildArch:  noarch
+
+# Required for tarball sources verification
+%if 0%{?sources_gpg} == 1
+BuildRequires:  /usr/bin/gpgv2
+BuildRequires:  openstack-macros
+%endif
 
 %package -n python3-%{executable}
 Summary:    A tool for managing TripleO repos from places like dlrn and Ceph.
@@ -47,6 +60,10 @@ Requires:       python3-requests
 
 
 %prep
+# Required for tarball sources verification
+%if 0%{?sources_gpg} == 1
+%{gpgverify}  --keyring=%{SOURCE102} --signature=%{SOURCE101} --data=%{SOURCE0}
+%endif
 %autosetup -n %{executable}-%{upstream_version} -S git
 
 # Let's handle dependencies ourseleves
