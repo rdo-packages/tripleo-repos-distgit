@@ -91,3 +91,4 @@ ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 %{_bindir}/%{executable}-3
 
 %changelog
+# REMOVEME: error caused by commit https://opendev.org/openstack/tripleo-repos/commit/fb329b4c49822d8c435745454e22bcdeb18baf92
