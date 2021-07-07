@@ -42,6 +42,7 @@ BuildRequires:  git-core
 BuildRequires:  python3-mock
 BuildRequires:  python3-fixtures
 # Required for unit tests
+BuildRequires:  python3-cliff
 BuildRequires:  python3-requests
 BuildRequires:  python3-oslotest
 BuildRequires:  python3-testrepository
@@ -50,6 +51,7 @@ BuildRequires:  python3-testtools
 BuildRequires:  python3-ddt
 
 
+Requires:       python3-cliff
 Requires:       python3-requests
 
 %description -n python3-%{executable}
