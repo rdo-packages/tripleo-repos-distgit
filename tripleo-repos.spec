@@ -75,6 +75,12 @@ rm -f *requirements.txt
 %install
 %{py3_install}
 
+# TODO(mwhahaha): this needs to be fixed in tripleo-repos
+if [ -d %{buildroot}/usr%{_sysconfdir}/tripleo_get_hash ]; then
+  install -d -m 755 %{buildroot}/%{_sysconfdir}/tripleo_get_hash
+  mv %{buildroot}/usr%{_sysconfdir}/tripleo_get_hash/* %{buildroot}%{_sysconfdir}/tripleo_get_hash/
+fi
+
 # Create a versioned binary for backwards compatibility until everything is pure py3
 ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 
@@ -89,5 +95,8 @@ ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 %exclude %{python3_sitelib}/tripleo_repos/tests
 %{_bindir}/%{executable}
 %{_bindir}/%{executable}-3
+%{_bindir}/tripleo-get-hash
+%{_bindir}/tripleo-yum-config
+%{_sysconfdir}/tripleo_get_hash
 
 %changelog
