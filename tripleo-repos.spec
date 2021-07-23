@@ -31,7 +31,7 @@ BuildRequires:  openstack-macros
 %endif
 
 %package -n python3-%{executable}
-Summary:    A tool for managing TripleO repos from places like dlrn and Ceph.
+Summary:    A tool for managing TripleO repos from places like dlrn and Ceph
 %{?python_provide:%python_provide python3-%{executable}}
 Obsoletes: python2-%{executable} < %{version}-%{release}
 
@@ -48,9 +48,11 @@ BuildRequires:  python3-testrepository
 BuildRequires:  python3-testscenarios
 BuildRequires:  python3-testtools
 BuildRequires:  python3-ddt
+BuildRequires:  python3-pyyaml
 
 
 Requires:       python3-requests
+Requires:       python3-pyyaml
 
 %description -n python3-%{executable}
 %{common_desc}
@@ -75,6 +77,12 @@ rm -f *requirements.txt
 %install
 %{py3_install}
 
+# TODO(mwhahaha): this needs to be fixed in tripleo-repos
+if [ -d %{buildroot}/usr%{_sysconfdir}/tripleo_get_hash ]; then
+  install -d -m 755 %{buildroot}/%{_sysconfdir}/tripleo_get_hash
+  mv %{buildroot}/usr%{_sysconfdir}/tripleo_get_hash/* %{buildroot}%{_sysconfdir}/tripleo_get_hash/
+fi
+
 # Create a versioned binary for backwards compatibility until everything is pure py3
 ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 
@@ -89,5 +97,8 @@ ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 %exclude %{python3_sitelib}/tripleo_repos/tests
 %{_bindir}/%{executable}
 %{_bindir}/%{executable}-3
+%{_bindir}/tripleo-get-hash
+%{_bindir}/tripleo-yum-config
+%config %{_sysconfdir}/tripleo_get_hash
 
 %changelog
