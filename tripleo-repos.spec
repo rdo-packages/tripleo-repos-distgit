@@ -100,6 +100,6 @@ ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 %{_bindir}/%{executable}-3
 %{_bindir}/tripleo-get-hash
 %{_bindir}/tripleo-yum-config
-%config(noreplace) %{_sysconfdir}/tripleo_get_hash/config.yaml
+%config %{_sysconfdir}/tripleo_get_hash/config.yaml
 
 %changelog
