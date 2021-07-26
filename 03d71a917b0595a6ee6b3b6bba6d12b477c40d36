@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89307fbe_80949ed4",
+        "filename": "tripleo-repos.spec",
+        "patchSetId": 9
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 403
+      },
+      "writtenOn": "2021-07-26T06:48:40Z",
+      "side": 1,
+      "message": "can add noreplace here itself instead of adding filter in https://review.rdoproject.org/r/c/rdo-jobs/+/34660/2/playbooks/rpmlint/run.yaml#282",
+      "range": {
+        "startLine": 102,
+        "startChar": 1,
+        "endLine": 102,
+        "endChar": 7
+      },
+      "revId": "03d71a917b0595a6ee6b3b6bba6d12b477c40d36",
+      "serverId": "270e2033-b340-4cff-9539-693957ebf0e7",
+      "unresolved": true
+    }
+  ]
+}
