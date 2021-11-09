@@ -103,3 +103,4 @@ ln -s %{executable} %{buildroot}%{_bindir}/%{executable}-3
 %config %{_sysconfdir}/tripleo_get_hash/config.yaml
 
 %changelog
+# REMOVEME: error caused by commit https://opendev.org/openstack/tripleo-repos/commit/da713cb3593018485e5d784e2b5523c416ab3845
